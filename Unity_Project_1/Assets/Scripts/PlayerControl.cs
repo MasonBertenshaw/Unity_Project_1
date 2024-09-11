@@ -1,11 +1,6 @@
-using JetBrains.Annotations;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class NewBehaviourScript : MonoBehaviour
 {
@@ -14,20 +9,20 @@ public class NewBehaviourScript : MonoBehaviour
 
     Vector2 camrotation;
 
-    [Header("player settings")]
+    public bool sprintmode = false;
+
+    [Header("Movement Settings")]
     public float speed = 10.0f;
-    public float jumpheight = 5.0f;
-    public float GroundDetectDistance = 1;
     public float sprintmultiplier = 2.5f;
-
-
-    [Header("player settings")]
-        public bool sprintToggleOption = false;
+    public float jumpheight = 5.0f;
+    public float GroundDetectDistance = 1f;
+   
+    [Header("User settings")]
+    public bool sprintToggleOption = false;
+    public float mouseSensitivity = 2.0f;
     public float xcamsensitivity = 2.0f;
     public float ycansensitivity = 2.0f;
     public float camRotioatonLimit = 90f;
-    public float mouseSensitivity = 2.0F;
-    public bool sprintmode = false;
 
     // Start is called before the first frame update
     void Start()
@@ -38,8 +33,6 @@ public class NewBehaviourScript : MonoBehaviour
         camrotation = Vector2.zero;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
-
     }
 
     // Update is called once per frame
@@ -48,17 +41,17 @@ public class NewBehaviourScript : MonoBehaviour
         camrotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
         camrotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
         
-
         camrotation.y = Mathf.Clamp(camrotation.y, -camRotioatonLimit, camRotioatonLimit);
 
         playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.y, Vector3.left);
         playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
 
-        
-
         Vector3 temp = Player.velocity;
 
-        if(sprintToggleOption)
+        float verticalMove = Input.GetAxisRaw("Vertical");
+        float horizontalMove = Input.GetAxisRaw("Horizontal");
+
+        if(!sprintToggleOption)
         {
             if(Input.GetKey(KeyCode.LeftShift))
                 sprintmode = true;
@@ -69,31 +62,23 @@ public class NewBehaviourScript : MonoBehaviour
 
         if(sprintToggleOption)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && Input.GetAxisRaw("Horizontal") <= 0)
+            if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
                 sprintmode = true;
 
             if (Input.GetAxisRaw("Vertical") <= 0)
                 sprintmode = false;
         }
-        
-        if (Input.GetKey(KeyCode.LeftShift))
-           sprintmode = true;
-
-
-        if (sprintmode)
-            temp.x = Input.GetAxisRaw("Vertical") * speed * sprintmultiplier;
-         
-
 
         if (!sprintmode)
-            temp.z = Input.GetAxisRaw("Horizontal") * speed;
+            temp.x = verticalMove * speed;
+
+        if (sprintmode)
+            temp.x = verticalMove * speed * sprintmultiplier;
         
+        temp.z=horizontalMove * speed;
 
        if(Input.GetKeyUp(KeyCode.LeftShift))
             sprintmode = false;
-
-
-
 
         if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, GroundDetectDistance))
             temp.y = jumpheight;
