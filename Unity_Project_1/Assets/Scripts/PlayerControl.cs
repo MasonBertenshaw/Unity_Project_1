@@ -9,6 +9,8 @@ public class NewBehaviourScript : MonoBehaviour
 
     Vector2 camrotation;
 
+    public Transform Weapon_Slot;
+
     public bool sprintmode = false;
 
     [Header("Movement Settings")]
@@ -23,6 +25,19 @@ public class NewBehaviourScript : MonoBehaviour
     public float xcamsensitivity = 2.0f;
     public float ycansensitivity = 2.0f;
     public float camRotioatonLimit = 90f;
+
+
+    [Header("Player Stats")]
+    public int maxHealthPoints = 100;
+    public int healthPoints = 50;
+    public int restoredHealthPoints = 10;
+    public int maxStamina = 100;
+    public int stamina = 100;
+
+    [Header("Weapons")]
+    public float attackSpeed;
+    
+
 
     // Start is called before the first frame update
     void Start()
@@ -44,7 +59,7 @@ public class NewBehaviourScript : MonoBehaviour
         camrotation.y = Mathf.Clamp(camrotation.y, -camRotioatonLimit, camRotioatonLimit);
 
         playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.y, Vector3.left);
-        playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
+        transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
 
         Vector3 temp = Player.velocity;
 
@@ -86,5 +101,35 @@ public class NewBehaviourScript : MonoBehaviour
 
         Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
 
+        //if (sprintmode = true)
+            
+        
+        if (stamina <= 0)
+            sprintmode=false;
+
+
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if ((healthPoints < maxHealthPoints) && collision.gameObject.tag == "Health Pickup")
+        {
+            healthPoints += restoredHealthPoints;
+
+            if (healthPoints > maxHealthPoints)
+                healthPoints = maxHealthPoints;
+
+            Destroy(collision.gameObject);
+        }
+
+        if (collision.gameObject.tag == "Weapons")
+            collision.gameObject.transform.SetParent(Weapon_Slot);
+    }
+
+    IEnumerator cooldown(float time)
+    {
+        yield return new WaitForSeconds(time);
+        
+    }
+    
 }
