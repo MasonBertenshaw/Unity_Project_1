@@ -18,7 +18,7 @@ public class NewBehaviourScript : MonoBehaviour
     public float sprintmultiplier = 2.5f;
     public float jumpheight = 5.0f;
     public float GroundDetectDistance = 1f;
-   
+
     [Header("User settings")]
     public bool sprintToggleOption = false;
     public float mouseSensitivity = 2.0f;
@@ -34,10 +34,15 @@ public class NewBehaviourScript : MonoBehaviour
     public int maxStamina = 100;
     public int stamina = 100;
 
-    [Header("Weapons")]
-    public float attackSpeed;
-    
-
+    [Header("Weapon Stats")]
+    public int attackSpeed;
+    public int weaponid = 0;
+    public float maxAmmo = 0;
+    public float currentAmmo = 0;
+    public float minAmmo = 0;
+    public bool canFire = true;
+    public int reloadAmount = 0;
+   
 
     // Start is called before the first frame update
     void Start()
@@ -55,7 +60,7 @@ public class NewBehaviourScript : MonoBehaviour
     {
         camrotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
         camrotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-        
+
         camrotation.y = Mathf.Clamp(camrotation.y, -camRotioatonLimit, camRotioatonLimit);
 
         playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.y, Vector3.left);
@@ -66,22 +71,22 @@ public class NewBehaviourScript : MonoBehaviour
         float verticalMove = Input.GetAxisRaw("Vertical");
         float horizontalMove = Input.GetAxisRaw("Horizontal");
 
-        if(!sprintToggleOption)
+        if (!sprintToggleOption)
         {
-            if(Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift))
                 sprintmode = true;
 
             if (Input.GetKeyUp(KeyCode.LeftShift))
                 sprintmode = false;
         }
 
-        if(sprintToggleOption)
+        if (sprintToggleOption)
         {
             if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
                 sprintmode = true;
 
-            if (Input.GetAxisRaw("Vertical") <= 0)
-                sprintmode = false;
+         // if (Input.GetAxisRaw("Vertical") <= 0)
+              //sprintmode = false;
         }
 
         if (!sprintmode)
@@ -89,10 +94,10 @@ public class NewBehaviourScript : MonoBehaviour
 
         if (sprintmode)
             temp.x = verticalMove * speed * sprintmultiplier;
-        
-        temp.z=horizontalMove * speed;
 
-       if(Input.GetKeyUp(KeyCode.LeftShift))
+        temp.z = horizontalMove * speed;
+
+        if (Input.GetKeyUp(KeyCode.LeftShift))
             sprintmode = false;
 
         if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, GroundDetectDistance))
@@ -101,14 +106,22 @@ public class NewBehaviourScript : MonoBehaviour
 
         Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
 
-        //if (sprintmode = true)
-            
-        
+      //if (sprintmode == true) 
+      
+
+
         if (stamina <= 0)
-            sprintmode=false;
+            sprintmode = false;
 
+     //if (Input.GetKeyDown(KeyCode.Q)
+        {
+            
+        }
 
+        
     }
+
+ 
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -122,14 +135,33 @@ public class NewBehaviourScript : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
-        if (collision.gameObject.tag == "Weapons")
-            collision.gameObject.transform.SetParent(Weapon_Slot);
+        if ((currentAmmo < maxAmmo) && collision.gameObject.tag == "Ammo Pickup")
+        {
+            currentAmmo += reloadAmount;
+
+            if (currentAmmo > maxAmmo)
+                currentAmmo = maxAmmo;
+
+            Destroy(collision.gameObject);
+        }
+
+        IEnumerator cooldownFIre()
+        {
+            yield return new WaitForSeconds(attackSpeed);
+            canFire = true;
+
+        }
+
+
     }
 
-    IEnumerator cooldown(float time)
+    private void OnTriggerEnter(Collider other)
     {
-        yield return new WaitForSeconds(time);
-        
+        if (other.gameObject.tag == "Weapons")
+        {
+            other.gameObject.transform.SetPositionAndRotation(Weapon_Slot.position, Weapon_Slot.rotation);
+            other.gameObject.transform.SetParent(Weapon_Slot);
+        }
     }
-    
 }
+
