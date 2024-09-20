@@ -35,14 +35,24 @@ public class NewBehaviourScript : MonoBehaviour
     public int stamina = 100;
 
     [Header("Weapon Stats")]
-    public int attackSpeed;
-    public int weaponid = 0;
+    public GameObject shot;
+    public float shotVel = 0;
+    public int fireMode = 0;
+    public float currentClip = 0;
+    public int clipSize = 0;
+    public float fireRate = 0;
+    public int weaponid = -1;
     public float maxAmmo = 0;
     public float currentAmmo = 0;
     public float minAmmo = 0;
     public bool canFire = true;
     public int reloadAmount = 0;
-   
+    public float bulletLifeSpan = 0;
+
+    [Header("Magic Stats")]
+    public int Mana;
+ 
+
 
     // Start is called before the first frame update
     void Start()
@@ -66,10 +76,23 @@ public class NewBehaviourScript : MonoBehaviour
         playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.y, Vector3.left);
         transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
 
+        if (Input.GetMouseButton(0) && canFire && currentClip > 0 && weaponid >= 0)
+        {
+            GameObject s = Instantiate(shot, Weapon_Slot.position, Weapon_Slot.rotation);
+            s.GetComponent<Rigidbody>().AddForce(playercam.transform.forward * shotVel);
+            Destroy(s, bulletLifeSpan);
+
+            canFire = false;
+            currentClip--;
+            StartCoroutine("cooldownFire");
+        }
+
         Vector3 temp = Player.velocity;
 
         float verticalMove = Input.GetAxisRaw("Vertical");
         float horizontalMove = Input.GetAxisRaw("Horizontal");
+
+
 
         if (!sprintToggleOption)
         {
@@ -85,8 +108,8 @@ public class NewBehaviourScript : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
                 sprintmode = true;
 
-         // if (Input.GetAxisRaw("Vertical") <= 0)
-              //sprintmode = false;
+            // if (Input.GetAxisRaw("Vertical") <= 0)
+            //sprintmode = false;
         }
 
         if (!sprintmode)
@@ -106,22 +129,37 @@ public class NewBehaviourScript : MonoBehaviour
 
         Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
 
-      //if (sprintmode == true) 
-      
-
-
-        if (stamina <= 0)
-            sprintmode = false;
-
-     //if (Input.GetKeyDown(KeyCode.Q)
-        {
-            
-        }
-
         
+
+            
     }
 
- 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Weapons")
+        {
+            other.gameObject.transform.SetPositionAndRotation(Weapon_Slot.position, Weapon_Slot.rotation);
+            other.gameObject.transform.SetParent(Weapon_Slot);
+            switch (other.gameObject.name)
+            {
+                case "weapon1":
+                    weaponid = 0;
+                    shotVel = 10000;
+                    fireMode = 0;
+                    fireRate = 0.25f;
+                    currentClip = 20;
+                    clipSize = 20;
+                    maxAmmo = 400;
+                    currentAmmo = 200;
+                    reloadAmount = 20;
+                    bulletLifeSpan = 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -147,21 +185,15 @@ public class NewBehaviourScript : MonoBehaviour
 
         IEnumerator cooldownFIre()
         {
-            yield return new WaitForSeconds(attackSpeed);
+            yield return new WaitForSeconds(fireRate);
             canFire = true;
 
         }
 
 
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Weapons")
-        {
-            other.gameObject.transform.SetPositionAndRotation(Weapon_Slot.position, Weapon_Slot.rotation);
-            other.gameObject.transform.SetParent(Weapon_Slot);
-        }
-    }
 }
+
+
+ 
 
