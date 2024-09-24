@@ -1,11 +1,15 @@
+using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewBehaviourScript : MonoBehaviour
+public class PlayerControl : MonoBehaviour
 {
     private Rigidbody Player;
     private Camera playercam;
+
+    private Transform cameraHolder;
 
     Vector2 camrotation;
 
@@ -33,6 +37,7 @@ public class NewBehaviourScript : MonoBehaviour
     public int restoredHealthPoints = 10;
     public int maxStamina = 100;
     public int stamina = 100;
+    public int staminaDrain = 1;
 
     [Header("Weapon Stats")]
     public GameObject shot;
@@ -50,7 +55,9 @@ public class NewBehaviourScript : MonoBehaviour
     public float bulletLifeSpan = 0;
 
     [Header("Magic Stats")]
-    public int Mana;
+    public int maxMana = 100;
+    public int mana = 100;
+    
  
 
 
@@ -58,7 +65,8 @@ public class NewBehaviourScript : MonoBehaviour
     void Start()
     {
         Player = GetComponent<Rigidbody>();
-        playercam = transform.GetChild(0).GetComponent<Camera>();
+        playercam = Camera.main;
+        cameraHolder = transform.GetChild(0);
 
         camrotation = Vector2.zero;
         Cursor.visible = false;
@@ -68,12 +76,14 @@ public class NewBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        playercam.transform.position = cameraHolder.position;
+
         camrotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
         camrotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
         camrotation.y = Mathf.Clamp(camrotation.y, -camRotioatonLimit, camRotioatonLimit);
 
-        playercam.transform.localRotation = Quaternion.AngleAxis(camrotation.y, Vector3.left);
+        playercam.transform.rotation = Quaternion.Euler(-camrotation.y, camrotation.x, 0);
         transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
 
         if (Input.GetMouseButton(0) && canFire && currentClip > 0 && weaponid >= 0)
@@ -129,9 +139,23 @@ public class NewBehaviourScript : MonoBehaviour
 
         Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
 
-        
+        //Stamina
+        {
+            if (sprintmode == true)
+            {
+                --stamina;
+            }
 
-            
+            if (stamina <= 1)
+            {
+                sprintmode = false;
+            }
+
+            if (stamina >= maxStamina)
+            {
+                stamina = maxStamina;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -142,20 +166,24 @@ public class NewBehaviourScript : MonoBehaviour
             other.gameObject.transform.SetParent(Weapon_Slot);
             switch (other.gameObject.name)
             {
-                case "weapon1":
+                case "BowArrows":
                     weaponid = 0;
                     shotVel = 10000;
                     fireMode = 0;
                     fireRate = 0.25f;
-                    currentClip = 20;
-                    clipSize = 20;
-                    maxAmmo = 400;
-                    currentAmmo = 200;
-                    reloadAmount = 20;
+                    currentClip = 1;
+                    clipSize = 1;
+                    maxAmmo = 25;
+                    currentAmmo = 5;
+                    reloadAmount = 1;
                     bulletLifeSpan = 1;
                     break;
                 default:
                     break;
+                case "Sword":
+
+                    break;
+
             }
         }
     }
@@ -182,6 +210,31 @@ public class NewBehaviourScript : MonoBehaviour
 
             Destroy(collision.gameObject);
         }
+    }
+    public void reloadclip()
+    {
+        if (currentClip >= clipSize)
+            return;
+
+        else
+        {
+            float reloadCount = clipSize - currentClip;
+
+            if (currentAmmo < reloadCount)
+            {
+                currentClip += currentAmmo;
+                currentAmmo = 0;
+                return;
+            }
+
+            else
+            {
+                currentClip += reloadCount;
+                currentAmmo -= reloadCount;
+                return;
+            }
+        }
+    }
 
         IEnumerator cooldownFIre()
         {
@@ -190,9 +243,9 @@ public class NewBehaviourScript : MonoBehaviour
 
         }
 
-
-    }
+        
 }
+
 
 
  

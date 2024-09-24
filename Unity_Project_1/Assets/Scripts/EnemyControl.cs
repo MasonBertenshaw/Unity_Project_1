@@ -1,16 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class EnemyControl : MonoBehaviour
 {
+    
+    public PlayerControl player;
+    public NavMeshAgent agent;
+
+    [Header("EnemyStats")]
     public int health = 3;
     public int maxhealth = 3;
+    public int damageGiven = 5;
+    public int damageTaken = 0;
+    public float knockbackforce = 5;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        player = GameObject.Find("Player").GetComponent<PlayerControl>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
@@ -20,6 +30,8 @@ public class EnemyControl : MonoBehaviour
         {
             Destroy(gameObject);
         } 
+
+        agent.destination = player.transform.position;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -27,7 +39,7 @@ public class EnemyControl : MonoBehaviour
         if (collision.gameObject.tag == "shot")
         {
             Destroy(collision.gameObject);
-            health--;
+            health -= damageTaken;
         }
     }
 }
