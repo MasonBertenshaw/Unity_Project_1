@@ -156,6 +156,11 @@ public class PlayerControl : MonoBehaviour
                 stamina = maxStamina;
             }
         }
+
+        //if (Input.GetKeyDown(KeyCode.Z) && mana >= 50)
+       // {
+
+       // }
     }
 
     private void OnTriggerEnter(Collider other)
