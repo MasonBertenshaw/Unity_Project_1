@@ -176,7 +176,7 @@ public class PlayerControl : MonoBehaviour
                     maxAmmo = 25;
                     currentAmmo = 5;
                     reloadAmount = 1;
-                    bulletLifeSpan = 1;
+                    bulletLifeSpan = 30;
                     break;
                 default:
                     break;
