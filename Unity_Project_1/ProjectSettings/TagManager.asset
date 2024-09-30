@@ -8,6 +8,7 @@ TagManager:
   - Weapons
   - Enemy
   - TutorialEnemy
+  - Shot
   layers:
   - Default
   - TransparentFX
