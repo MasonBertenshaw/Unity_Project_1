@@ -37,7 +37,8 @@ public class PlayerControl : MonoBehaviour
     public int restoredHealthPoints = 10;
     public int maxStamina = 100;
     public int stamina = 100;
-    public int staminaDrain = 1;
+    public float staminaDrain = 0.25f;
+    public int minStamina = 0;
 
     [Header("Weapon Stats")]
     public GameObject shot;
@@ -53,6 +54,7 @@ public class PlayerControl : MonoBehaviour
     public bool canFire = true;
     public int reloadAmount = 0;
     public float bulletLifeSpan = 0;
+    public float reloadtimer = 2f;
 
     [Header("Magic Stats")]
     public int maxMana = 100;
@@ -146,7 +148,7 @@ public class PlayerControl : MonoBehaviour
                 --stamina;
             }
 
-            if (stamina <= 1)
+            if (stamina <= minStamina)
             {
                 sprintmode = false;
             }
@@ -161,6 +163,10 @@ public class PlayerControl : MonoBehaviour
        // {
 
        // }
+
+
+
+        
     }
 
     private void OnTriggerEnter(Collider other)
@@ -239,9 +245,10 @@ public class PlayerControl : MonoBehaviour
                 return;
             }
         }
+
     }
 
-        IEnumerator cooldownFIre()
+        IEnumerator cooldownFire()
         {
             yield return new WaitForSeconds(fireRate);
             canFire = true;
