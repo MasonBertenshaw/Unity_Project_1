@@ -17,6 +17,8 @@ public class PlayerControl : MonoBehaviour
 
     public bool sprintmode = false;
 
+    public GameManager gm;
+
     [Header("Movement Settings")]
     public float speed = 10.0f;
     public float sprintmultiplier = 2.5f;
@@ -66,6 +68,7 @@ public class PlayerControl : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         Player = GetComponent<Rigidbody>();
         playercam = Camera.main;
         cameraHolder = transform.GetChild(0);
@@ -78,69 +81,72 @@ public class PlayerControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        playercam.transform.position = cameraHolder.position;
-
-        camrotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
-        camrotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
-
-        camrotation.y = Mathf.Clamp(camrotation.y, -camRotioatonLimit, camRotioatonLimit);
-
-        playercam.transform.rotation = Quaternion.Euler(-camrotation.y, camrotation.x, 0);
-        transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
-
-        if (Input.GetMouseButton(0) && canFire && currentClip > 0 && weaponid >= 0)
+        if (!gm.isPaused)
         {
-            GameObject s = Instantiate(shot, Weapon_Slot.position, Weapon_Slot.rotation);
-            s.GetComponent<Rigidbody>().AddForce(playercam.transform.forward * shotVel);
-            Destroy(s, bulletLifeSpan);
+            playercam.transform.position = cameraHolder.position;
+        
 
-            canFire = false;
-            currentClip--;
-            StartCoroutine("cooldownFire");
-        }
+            camrotation.x += Input.GetAxisRaw("Mouse X") * mouseSensitivity;
+            camrotation.y += Input.GetAxisRaw("Mouse Y") * mouseSensitivity;
 
-        Vector3 temp = Player.velocity;
+            camrotation.y = Mathf.Clamp(camrotation.y, -camRotioatonLimit, camRotioatonLimit);
+    
+            playercam.transform.rotation = Quaternion.Euler(-camrotation.y, camrotation.x, 0);
+            transform.localRotation = Quaternion.AngleAxis(camrotation.x, Vector3.up);
 
-        float verticalMove = Input.GetAxisRaw("Vertical");
-        float horizontalMove = Input.GetAxisRaw("Horizontal");
+            if (Input.GetMouseButton(0) && canFire && currentClip > 0 && weaponid >= 0)
+            {
+                GameObject s = Instantiate(shot, Weapon_Slot.position, Weapon_Slot.rotation);
+                s.GetComponent<Rigidbody>().AddForce(playercam.transform.forward * shotVel);
+                Destroy(s, bulletLifeSpan);
+
+                canFire = false;
+                currentClip--;
+                StartCoroutine("cooldownFire");
+            }
+
+            Vector3 temp = Player.velocity;
+
+            float verticalMove = Input.GetAxisRaw("Vertical");
+            float horizontalMove = Input.GetAxisRaw("Horizontal");
 
 
 
-        if (!sprintToggleOption)
-        {
-            if (Input.GetKey(KeyCode.LeftShift))
-                sprintmode = true;
+            if (!sprintToggleOption)
+            {
+             if (Input.GetKey(KeyCode.LeftShift))
+                    sprintmode = true;
+
+                if (Input.GetKeyUp(KeyCode.LeftShift))
+                    sprintmode = false;
+            }
+
+            if (sprintToggleOption)
+            {
+                if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
+                    sprintmode = true;
+
+                // if (Input.GetAxisRaw("Vertical") <= 0)
+                //sprintmode = false;
+            }
+
+            if (!sprintmode)
+                temp.x = verticalMove * speed;
+
+            if (sprintmode)
+                temp.x = verticalMove * speed * sprintmultiplier;
+
+            temp.z = horizontalMove * speed;
 
             if (Input.GetKeyUp(KeyCode.LeftShift))
                 sprintmode = false;
+
+            if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, GroundDetectDistance))
+                temp.y = jumpheight;
+
+
+            Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
         }
-
-        if (sprintToggleOption)
-        {
-            if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
-                sprintmode = true;
-
-            // if (Input.GetAxisRaw("Vertical") <= 0)
-            //sprintmode = false;
-        }
-
-        if (!sprintmode)
-            temp.x = verticalMove * speed;
-
-        if (sprintmode)
-            temp.x = verticalMove * speed * sprintmultiplier;
-
-        temp.z = horizontalMove * speed;
-
-        if (Input.GetKeyUp(KeyCode.LeftShift))
-            sprintmode = false;
-
-        if (Input.GetKeyDown(KeyCode.Space) && Physics.Raycast(transform.position, -transform.up, GroundDetectDistance))
-            temp.y = jumpheight;
-
-
-        Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
-
         //Stamina
         {
             if (sprintmode == true)
