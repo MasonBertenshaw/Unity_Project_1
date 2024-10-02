@@ -21,31 +21,38 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerdata = GameObject.Find("Player").GetComponent<PlayerControl>();
+        if (SceneManager.GetActiveScene().buildIndex > 0)
+        {
+            playerdata = GameObject.Find("Player").GetComponent<PlayerControl>();
+        }
 
+        isPaused = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        healthBar.fillAmount = playerdata.healthPoints / playerdata.maxHealthPoints;
-
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if (SceneManager.GetActiveScene().buildIndex > 0)
         {
-            if (!isPaused)
+            healthBar.fillAmount = Mathf.Clamp((float)playerdata.healthPoints / (float)playerdata.maxHealthPoints, 0, 1);
+
+            if (Input.GetKeyUp(KeyCode.Escape))
             {
-                pauseMenu.SetActive(true);
+                if (!isPaused)
+                {
+                    pauseMenu.SetActive(true);
 
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                    Cursor.visible = true;
 
-                Time.timeScale = 0;
+                    Time.timeScale = 0;
 
-                isPaused = true;
+                    isPaused = true;
+                }
+                else
+                    Resume();
+
             }
-            else
-                Resume();
-            
         }
         
     }
