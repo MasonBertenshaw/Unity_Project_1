@@ -175,36 +175,6 @@ public class PlayerControl : MonoBehaviour
         
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Weapons")
-        {
-            other.gameObject.transform.SetPositionAndRotation(Weapon_Slot.position, Weapon_Slot.rotation);
-            other.gameObject.transform.SetParent(Weapon_Slot);
-            switch (other.gameObject.name)
-            {
-                case "BowArrows":
-                    weaponid = 0;
-                    shotVel = 10000;
-                    fireMode = 0;
-                    fireRate = 0.25f;
-                    currentClip = 1;
-                    clipSize = 1;
-                    maxAmmo = 25;
-                    currentAmmo = 5;
-                    reloadAmount = 1;
-                    bulletLifeSpan = 30;
-                    break;
-                default:
-                    break;
-                case "Sword":
-
-                    break;
-
-            }
-        }
-    }
-
 
     private void OnCollisionEnter(Collision collision)
     {
