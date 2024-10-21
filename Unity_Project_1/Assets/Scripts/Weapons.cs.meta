@@ -1,2 +1,14 @@
 fileFormatVersion: 2
 guid: 0b4fd04cbe2774845b560ff7a14f17ad
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - swing: {fileID: 1897570883826705298, guid: 61b280c10829cbf4995593f239c0a4fa, type: 3}
+  - shot: {fileID: 5958291169800813339, guid: 6c92417730c34174f8be3d070bc55fff, type: 3}
+  - Weapon_Slot: {fileID: 1239848579473942020, guid: 50d8e8b6212a3f94d9bd6d6386a594b0, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
