@@ -25,7 +25,6 @@ public class GameManager : MonoBehaviour
         {
             playerdata = GameObject.Find("Player").GetComponent<PlayerControl>();
         }
-
         isPaused = false;
     }
 
@@ -45,9 +44,10 @@ public class GameManager : MonoBehaviour
                     Cursor.lockState = CursorLockMode.None;
                     Cursor.visible = true;
 
-                    Time.timeScale = 0;
 
                     isPaused = true;
+
+                    Time.timeScale = 0;
                 }
                 else
                     Resume();

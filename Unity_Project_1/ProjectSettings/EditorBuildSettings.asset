@@ -4,5 +4,15 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Main Menu (TowerBase).unity
+    guid: 82d4be9aca07d434db2ac082c31d126a
+  - enabled: 1
+    path: Assets/Scenes/Village (floor 1).unity
+    guid: 56fd4334fc9260243bca41e3a3f447b4
+  - enabled: 1
+    path: Assets/Scenes/Fields of _______ (Floor 1).unity
+    guid: 5654654795ecc8d49872558dde1e4fd7
   m_configObjects: {}
+  m_UseUCBPForAssetBundles: 0

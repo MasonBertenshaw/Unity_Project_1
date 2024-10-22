@@ -10,6 +10,8 @@ TagManager:
   - Shot
   - CRWeapons
   - LRWeapons
+  - NextScene
+  - PreviousScene
   layers:
   - Default
   - TransparentFX
