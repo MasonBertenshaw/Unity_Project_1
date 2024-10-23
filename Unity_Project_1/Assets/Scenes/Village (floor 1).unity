@@ -2750,6 +2750,7 @@ GameObject:
   - component: {fileID: 424125315}
   - component: {fileID: 424125314}
   - component: {fileID: 424125320}
+  - component: {fileID: 424125321}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2769,6 +2770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71b3a148b3bdba44e8b5b7509d0f45bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerStamina: {fileID: 424125321}
   Weapon_Slot: {fileID: 1203519638}
   sprintmode: 0
   gm: {fileID: 0}
@@ -2950,6 +2952,22 @@ MonoBehaviour:
   bulletLifeSpan: 0
   reloadtimer: 2
   Weapon_Slot: {fileID: 0}
+--- !u!114 &424125321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424125313}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b909d84c6e88e45a65f61c3af90b3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  staminaBar: {fileID: 2045076028}
+  isSprint: 0
+  currentStamina: 100
+  maxStamina: 100
 --- !u!1 &456905943
 GameObject:
   m_ObjectHideFlags: 0
@@ -14460,8 +14478,9 @@ GameObject:
   - component: {fileID: 2045076025}
   - component: {fileID: 2045076027}
   - component: {fileID: 2045076026}
+  - component: {fileID: 2045076028}
   m_Layer: 5
-  m_Name: staminaBar
+  m_Name: StaminaBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14524,6 +14543,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2045076024}
   m_CullTransparentMesh: 1
+--- !u!114 &2045076028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045076024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd52362fed22ef046baf7a4eef0bb95a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 2045076026}
 --- !u!1001 &2051265772
 PrefabInstance:
   m_ObjectHideFlags: 0

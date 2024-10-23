@@ -8,6 +8,7 @@ public class PlayerControl : MonoBehaviour
 {
     private Rigidbody Player;
     private Camera playercam;
+    public PlayerStamina playerStamina;
 
     private Transform cameraHolder;
 
@@ -24,6 +25,7 @@ public class PlayerControl : MonoBehaviour
     public float sprintmultiplier = 2.5f;
     public float jumpheight = 5.0f;
     public float GroundDetectDistance = 1f;
+    bool isMoving;
 
     [Header("User settings")]
     public bool sprintToggleOption = false;
@@ -111,10 +113,9 @@ public class PlayerControl : MonoBehaviour
             float horizontalMove = Input.GetAxisRaw("Horizontal");
 
 
-
             if (!sprintToggleOption)
             {
-             if (Input.GetKey(KeyCode.LeftShift))
+             if (Input.GetKey(KeyCode.LeftShift) && playerStamina.currentStamina > 0)
                     sprintmode = true;
 
                 if (Input.GetKeyUp(KeyCode.LeftShift))
@@ -123,7 +124,7 @@ public class PlayerControl : MonoBehaviour
 
             if (sprintToggleOption)
             {
-                if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0)
+                if (Input.GetKey(KeyCode.LeftShift) && verticalMove > 0 && playerStamina.currentStamina > 0)
                     sprintmode = true;
 
                 // if (Input.GetAxisRaw("Vertical") <= 0)
@@ -147,22 +148,17 @@ public class PlayerControl : MonoBehaviour
 
             Player.velocity = (temp.x * transform.forward) + (temp.z * transform.right) + (temp.y * transform.up);
         }
-        //Stamina
+
+        if (Input.GetAxisRaw("Vertical") != 0 || Input.GetAxisRaw("Horizontal") != 0)
+            isMoving = true;
+        else
+            isMoving = false;
         {
-            if (sprintmode == true)
-            {
-                --stamina;
-            }
-
-            if (stamina <= minStamina)
-            {
-                sprintmode = false;
-            }
-
-            if (stamina >= maxStamina)
-            {
-                stamina = maxStamina;
-            }
+            if (sprintmode)
+                playerStamina.isSprint = true;
+            
+            else
+                playerStamina.isSprint = false;
         }
 
         //if (Input.GetKeyDown(KeyCode.Z) && mana >= 50)
