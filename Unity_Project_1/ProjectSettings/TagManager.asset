@@ -10,8 +10,10 @@ TagManager:
   - Shot
   - CRWeapons
   - LRWeapons
-  - NextScene
-  - PreviousScene
+  - ToTheFeilds
+  - ToTheVillage
+  - GetOut
+  - StartGame
   layers:
   - Default
   - TransparentFX

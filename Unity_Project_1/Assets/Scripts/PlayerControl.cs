@@ -2,13 +2,17 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+
+
 
 public class PlayerControl : MonoBehaviour
 {
     private Rigidbody Player;
     private Camera playercam;
     public PlayerStamina playerStamina;
+    public EnemyControl EnemyControl;
 
     private Transform cameraHolder;
 
@@ -19,6 +23,8 @@ public class PlayerControl : MonoBehaviour
     public bool sprintmode = false;
 
     public GameManager gm;
+
+     
 
     [Header("Movement Settings")]
     public float speed = 10.0f;
@@ -37,7 +43,7 @@ public class PlayerControl : MonoBehaviour
 
     [Header("Player Stats")]
     public int maxHealthPoints = 100;
-    public int healthPoints = 50;
+    public int healthPoints = 100;
     public int restoredHealthPoints = 10;
     public int maxStamina = 100;
     public int stamina = 100;
@@ -74,6 +80,7 @@ public class PlayerControl : MonoBehaviour
         Player = GetComponent<Rigidbody>();
         playercam = Camera.main;
         cameraHolder = transform.GetChild(0);
+        
 
         camrotation = Vector2.zero;
         Cursor.visible = false;
@@ -174,6 +181,7 @@ public class PlayerControl : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //HealthPickup
         if ((healthPoints < maxHealthPoints) && collision.gameObject.tag == "Health Pickup")
         {
             healthPoints += restoredHealthPoints;
@@ -183,7 +191,7 @@ public class PlayerControl : MonoBehaviour
 
             Destroy(collision.gameObject);
         }
-
+        //AmmoPickup
         if ((currentAmmo < maxAmmo) && collision.gameObject.tag == "Ammo Pickup")
         {
             currentAmmo += reloadAmount;
@@ -193,7 +201,16 @@ public class PlayerControl : MonoBehaviour
 
             Destroy(collision.gameObject);
         }
+        //Damage to player
+        if (tag == "Enemy")
+        {
+            
+        }
     }
+
+
+
+
     public void reloadclip()
     {
         if (currentClip >= clipSize)

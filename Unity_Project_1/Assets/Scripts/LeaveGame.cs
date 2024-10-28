@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TransitionToNextScene : MonoBehaviour
+public class LeaveGame : MonoBehaviour
 {
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "NextScene")
+        if (collision.gameObject.tag == "LeaveGame")
         {
-            SceneManager.LoadScene(2);
+           SceneManager.LoadScene(0);
         }
     }
 }

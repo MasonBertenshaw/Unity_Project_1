@@ -71,18 +71,45 @@ public class GameManager : MonoBehaviour
 
     public void QuitGame()
     {
-        Application.Quit();
+        SceneManager.LoadScene(0);
     }
 
-    public void LoadLevel(int sceneID)
+    public void Respawn()
     {
-        SceneManager.LoadScene(sceneID);
+        playerdata.healthPoints = 0;
+
+       
         Time.timeScale = 1;
+        pauseMenu.SetActive(false);
+        isPaused = false;
+
     }
 
-    public void RestartLevel()
+    public void StartGame()
     {
-        LoadLevel(SceneManager.GetActiveScene().buildIndex);
-        Time.timeScale = 1;
+        SceneManager.LoadScene(1);
+    }
+
+    public void OnCollisionEnter (Collision collision)
+    {
+        if (collision.gameObject.tag == "ToTheFeilds")
+        {
+            SceneManager.LoadScene(2);
+        }
+
+        if (collision.gameObject.tag == "ToTheVillage")
+        {
+            SceneManager.LoadScene(1);
+        }
+
+        if (collision.gameObject.tag == "GetOut")
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if (collision.gameObject.tag == "StartGame")
+        {
+            SceneManager.LoadScene(1);
+        }
     }
 }
