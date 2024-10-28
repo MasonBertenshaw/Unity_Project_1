@@ -10,11 +10,11 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     private Rigidbody Player;
-    private Camera playercam;
+    public Camera playercam;
     public PlayerStamina playerStamina;
-    public EnemyControl EnemyControl;
+    
 
-    private Transform cameraHolder;
+    public Transform cameraHolder;
 
     Vector2 camrotation;
 
@@ -78,7 +78,7 @@ public class PlayerControl : MonoBehaviour
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
         Player = GetComponent<Rigidbody>();
-        playercam = Camera.main;
+        playercam = GameObject.Find("Player").GetComponentInChildren<Camera>();
         cameraHolder = transform.GetChild(0);
         
 

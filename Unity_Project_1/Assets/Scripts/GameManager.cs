@@ -105,6 +105,7 @@ public class GameManager : MonoBehaviour
         if (collision.gameObject.tag == "GetOut")
         {
             SceneManager.LoadScene(0);
+            isPaused = false;
         }
 
         if (collision.gameObject.tag == "StartGame")
